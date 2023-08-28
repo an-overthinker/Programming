@@ -1,0 +1,116 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result
+{
+    public static List<Integer> waiter(List<Integer> number, int q)
+    {
+        List<Integer> answers = new ArrayList<>();
+        List<Integer> primeNos = primes(q);
+        Stack<Integer> A = new Stack<>();
+        Stack<Integer> B = new Stack<>();
+        int size;
+        for(Integer item : number)
+            A.push(item);
+        for(int i = 0; i < q; i++)
+        {
+            Stack<Integer> temp = new Stack<>();
+            for(size = A.size(); size > 0; size --)
+            {
+                Integer item = A.pop();
+                if(item % primeNos.get(i) == 0)
+                    B.push(item);
+                else
+                    temp.push(item);
+                
+            }
+            if(!B.isEmpty())
+            {
+                for(size = B.size(); size > 0; size--)
+                    answers.add(B.pop());
+            }
+            A = temp;
+        }
+        if(!A.isEmpty())
+        {
+            size = A.size();
+            while(size > 0)
+            {
+                answers.add(A.pop());
+                size--;
+            }
+        }
+        return answers;
+    }
+    
+    public static List<Integer> primes(int itr)
+    {
+        int count = 0,digit=2;
+        List<Integer> primeList = new ArrayList<>();
+        while(count < itr)
+        {
+            if(isPrime(digit))
+            {
+                primeList.add(digit);
+                count++;
+            }
+            digit++;
+        }
+        return primeList;
+    }
+    
+    public static boolean isPrime(int num)
+    {
+        if(num == 2)
+            return true;
+        if(num < 2)
+            return false;
+        if(num % 2 == 0)
+            return false;
+        for(int i = 3; i <= Math.sqrt(num); i += 2)
+        {
+            if(num % i == 0)
+                return false;
+        }
+        return true;
+    }
+}
+
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String[] firstMultipleInput = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+        int n = Integer.parseInt(firstMultipleInput[0]);
+
+        int q = Integer.parseInt(firstMultipleInput[1]);
+
+        List<Integer> number = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
+
+        List<Integer> result = Result.waiter(number, q);
+
+        bufferedWriter.write(
+            result.stream()
+                .map(Object::toString)
+                .collect(joining("\n"))
+            + "\n"
+        );
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
