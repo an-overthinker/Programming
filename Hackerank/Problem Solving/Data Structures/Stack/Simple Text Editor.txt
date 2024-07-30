@@ -1,3 +1,8 @@
+PROBLEM:-
+https://www.hackerrank.com/challenges/waiter/problem
+
+My JAVA8 Solution to it:-
+
 import java.io.*;
 import java.util.*;
 
